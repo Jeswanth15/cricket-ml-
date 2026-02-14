@@ -5,9 +5,6 @@ from xgboost import XGBClassifier
 from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-# =========================
-# DB CONNECTION
-# =========================
 
 conn = mysql.connector.connect(
     host="localhost",
@@ -17,9 +14,7 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor(dictionary=True)
 
-# =========================
-# LOAD DATA
-# =========================
+
 
 cursor.execute("SELECT * FROM matches WHERE actual_winner_team_id IS NOT NULL")
 matches = cursor.fetchall()
@@ -45,9 +40,6 @@ players = cursor.fetchall()
 cursor.execute("SELECT * FROM ground")
 grounds = cursor.fetchall()
 
-# =========================
-# DICTIONARIES
-# =========================
 
 playing_dict = {}
 for r in playing:
@@ -62,9 +54,6 @@ bowling_type = {r["player_id"]: r["bowling_type"] for r in players}
 
 phases = ["powerplay","middle","death"]
 
-# =========================
-# FEATURE FUNCTIONS
-# =========================
 
 def lineup_player_phase_score(players):
     total, count = 0.0, 0
@@ -110,9 +99,7 @@ def ground_features(ground_id):
         return scoring, chase, home
     return 0.75, 0.5, None
 
-# =========================
-# BUILD DATASET
-# =========================
+
 
 X, y = [], []
 
@@ -165,9 +152,6 @@ y = np.array(y, dtype=int)
 print("\nTotal Samples:", len(X))
 print("Class Distribution:", np.bincount(y))
 
-# =========================
-# XGBOOST MODEL
-# =========================
 
 model = XGBClassifier(
     n_estimators=200,
@@ -196,12 +180,8 @@ print("Precision:", round(np.mean(scores["test_precision"]),3))
 print("Recall   :", round(np.mean(scores["test_recall"]),3))
 print("F1 Score :", round(np.mean(scores["test_f1"]),3))
 
-# Train on full dataset
 model.fit(X, y)
 
-# =========================
-# PREDICTION
-# =========================
 
 TEAM_A_ID = int(sys.argv[1])
 TEAM_B_ID = int(sys.argv[2])
