@@ -227,7 +227,7 @@ prob = model.predict_proba(features)[0]
 print("\n===== FINAL MATCH PREDICTION (XGBOOST) =====")
 print("Predicted Winner:", "TEAM A" if prob[1] > prob[0] else "TEAM B")
 print("Team A Win Probability:", round(prob[1]*100,2), "%")
-print("Team B Win Probability:", round(prob[0]*100,2), "%")
+print("Team B Win Probability: ", round(prob[0]*100,2), "%")
 
 print("\nFeature Importance:")
 feature_names = ["player_phase","team_phase","matchup","ground","chase","toss","home","day"]
